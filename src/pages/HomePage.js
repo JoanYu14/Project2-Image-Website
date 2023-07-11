@@ -7,6 +7,8 @@ const HomePage = () => {
   const API_KEY = process.env.REACT_APP_KEY; // 在Pexels申請的API key
   let [data, setData] = useState(null); // data這個state要儲存圖片的資訊，一開始設定為null代表沒有任何東西
   let [input, setInput] = useState(""); // setInput這個function要傳給Search組件，因為我們希望input的值要等於Search組件內input標籤的value
+  let [page, setPage] = useState(1); // 因為要製作更多圖片的功能，所以設定page state
+  let [currentSearch, setCurrnetSearch] = useState(""); // 讓更多圖片的功能按照currentSearch這個state的值去得到圖片，只有使用searchImage時會改變這個值
 
   const initialURL = "https://api.pexels.com/v1/curated?page=1&per_page=15"; // page是第一頁，per_page是要拿到15張照片，這是取得精選圖片
   const searchURL = `https://api.pexels.com/v1/search?query=${input}&page=1&per_page=15`; // query是要查詢的東西
@@ -18,6 +20,24 @@ const HomePage = () => {
     // 讓result存入Pexels傳回來的資料(一個物件)
     let result = await axios.get(url, { headers: { Authorization: API_KEY } }); // 這個給API KEY的方法是Pexels規定的
     setData(result.data.photos); // 設定data這個State的值為photos這個array(photos這個屬性的值微陣列，陣列中存有跟圖片相關的資訊)
+    setCurrnetSearch(input);
+  };
+
+  const morePicture = async () => {
+    setPage(page + 1); // 雖然在morePicture內部page不會+1，但還是要設定
+    let newURL; // 宣告變數
+    if (currentSearch === "") {
+      // 因為Closure步驟在執行morePicture時就已經決定page的值是多少了，所以即使這個函是上面有set page這個state+1，但在這裡page仍然是加之前的值，所以這裡還得寫+1
+      newURL = `https://api.pexels.com/v1/curated?page=${page + 1}&per_page=15`;
+    } else {
+      newURL = `https://api.pexels.com/v1/search?query=${currentSearch}&page=${
+        page + 1
+      }&per_page=15`;
+    }
+    let result = await axios.get(newURL, {
+      headers: { Authorization: API_KEY },
+    }); // 這個給API KEY的方法是Pexels規定的
+    setData(data.concat(result.data.photos)); // 讓data陣列加入result.data.photos陣列中的元素
   };
 
   // 因為要讓使用者在剛進網站就有精選圖片，所以我們要使用useEffect，第二個參數為空陣列的話，在HomePage第一次被渲染時就會執行第一個參數的函式
@@ -50,6 +70,9 @@ const HomePage = () => {
               return <Picture data={pic} />;
             })
         }
+      </div>
+      <div className="morePicture">
+        <button onClick={morePicture}>更多圖片</button>
       </div>
     </div>
   );
