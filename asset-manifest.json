@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/Project2-Image-Website/static/css/main.a8478101.css",
+    "main.js": "/Project2-Image-Website/static/js/main.5ef977ed.js",
+    "index.html": "/Project2-Image-Website/index.html",
+    "main.a8478101.css.map": "/Project2-Image-Website/static/css/main.a8478101.css.map",
+    "main.5ef977ed.js.map": "/Project2-Image-Website/static/js/main.5ef977ed.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a8478101.css",
+    "static/js/main.5ef977ed.js"
+  ]
+}
